@@ -97,6 +97,25 @@ void initialize_menu(PlaydateAPI *pd) {
 }
 
 
+void buttonHandler(PlaydateAPI *pd) {
+    PDButtons current;
+    PDButtons pushed;
+    PDButtons released;
+    pd->system->getButtonState(&current, &pushed, &released);
+
+    // Reverse the direction if appropriate.
+    if ((released & kButtonRight && props.dx < 0)
+        || (released & kButtonLeft && props.dx > 0))
+        props.dx = -props.dx;
+    if ((released & kButtonDown && props.dy < 0)
+        || (released & kButtonUp && props.dy > 0))
+        props.dy = -props.dy;
+
+//    pd->system->logToConsole("Button state: current=%d, pushed=%d, released=%d\n",
+//                             current, pushed, released);
+}
+
+
 int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t arg) {
 	if (event == kEventInit) {
         pd->system->logToConsole("kEventInit event\n");
@@ -127,7 +146,8 @@ int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t arg) {
 static int update(void* userdata)
 {
 	PlaydateAPI* pd = userdata;
-	
+    buttonHandler(pd);
+
 	pd->graphics->clear(kColorWhite);
 	pd->graphics->setFont(font);
 	pd->graphics->drawText("Hello World!", strlen("Hello World!"), kASCIIEncoding, props.x, props.y);
