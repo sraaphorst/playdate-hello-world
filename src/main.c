@@ -16,10 +16,12 @@ LCDFont* font = NULL;
 __declspec(dllexport)
 #endif
 
-// To reflect the changes in this, you must do:
-// cd build ; cmake .. ; make
+// The width and height of the text.
 #define TEXT_WIDTH 86
 #define TEXT_HEIGHT 16
+
+// If the view is flipped and FLIP_BUTTONS is set, the buttons act normally, i.e. are not flipped.
+#define FLIP_BUTTONS 1
 
 // Speed increase for X and Y and maximums.
 #define X_MULTIPLIER_DELTA 2
@@ -31,6 +33,7 @@ __declspec(dllexport)
 #define X_DELTA 2
 #define Y_DELTA 1
 
+// Properties of the view.
 struct {
     int x, y;
     int dx, dy;
@@ -113,11 +116,28 @@ void buttonHandler(PlaydateAPI *pd) {
     pd->system->getButtonState(NULL, &pushed, NULL);
 
     // Reverse the direction if appropriate.
-    if ((pushed & kButtonRight && props.dx < 0)
-        || (pushed & kButtonLeft && props.dx > 0))
+    // Even if we are flipped, we want to make the buttons act as they should.
+    PDButtons modified = 0;
+#ifdef FLIP_BUTTONS
+    if (props.flip_x) {
+        if (pushed & kButtonRight) modified |= kButtonLeft;
+        if (pushed & kButtonLeft)  modified |= kButtonRight;
+    } else
+        modified |= (pushed & kButtonRight) | (pushed & kButtonLeft);
+    if (props.flip_y) {
+        if (pushed & kButtonDown) modified |= kButtonUp;
+        if (pushed & kButtonUp)   modified |= kButtonDown;
+    } else
+        modified += (pushed & kButtonUp) | (pushed & kButtonDown);
+#else
+    modified = pushed;
+#endif
+
+    if ((modified & kButtonRight && props.dx < 0)
+        || (modified & kButtonLeft && props.dx > 0))
         props.dx = -props.dx;
-    if ((pushed & kButtonDown && props.dy < 0)
-        || (pushed & kButtonUp && props.dy > 0))
+    if ((modified & kButtonDown && props.dy < 0)
+        || (modified & kButtonUp && props.dy > 0))
         props.dy = -props.dy;
 }
 
