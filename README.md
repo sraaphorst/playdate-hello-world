@@ -4,6 +4,9 @@ This is a test project using C exclusively to learn about the Playdate API.
 
 The API is documented [here](https://sdk.play.date/2.0.1/Inside%20Playdate%20with%20C.html).
 
+The song is:
+[FASSounds - Good Night](https://pixabay.com/users/fassounds-3433550)
+
 ### Build Configuration
 
 For CMake, (CMD-,), add a configuration called "Device" with:

@@ -36,5 +36,8 @@ else()
 	add_library(${PLAYDATE_GAME_NAME} SHARED src/main.c )
 endif()
 
+# Copy the MP3 file for the demo into the binary directory.
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/assets/good-night.mp3 hello_world.pdx/good-night.mp3 COPYONLY)
+
 include(${SDK}/C_API/buildsupport/playdate_game.cmake)
 

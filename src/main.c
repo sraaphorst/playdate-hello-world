@@ -9,8 +9,14 @@
 #include "pd_api.h"
 
 static int update(void* userdata);
+
+// Font information
 const char* font_path = "/System/Fonts/Asheville-Sans-14-Bold.pft";
 LCDFont* font = NULL;
+
+// Music player.
+const char *mp3_path = "good-night.mp3";
+FilePlayer *fp = NULL;
 
 #ifdef _WINDLL
 __declspec(dllexport)
@@ -195,11 +201,25 @@ void crankHandler(PlaydateAPI *pd) {
 
 int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t) {
 	if (event == kEventInit) {
+        pd->system->logToConsole("*** Initialization commencing.");
 		const char* err;
+
 		font = pd->graphics->loadFont(font_path, &err);
-		
 		if (font == NULL)
 			pd->system->error("%s:%i Couldn't load font %s: %s", __FILE__, __LINE__, font_path, err);
+
+        // Attempt to load the music.
+        fp = pd->sound->fileplayer->newPlayer();
+        if (fp == NULL)
+            pd->system->error("%s:%i Couldn't initialize file player", __FILE__, __LINE__);
+        int status = pd->sound->fileplayer->loadIntoPlayer(fp, mp3_path);
+        if (!status)
+            pd->system->error("%s:%i Couldn't find sound file %s", __FILE__, __LINE__, mp3_path);
+        pd->sound->fileplayer->setVolume(fp, 1.0f, 1.0f);
+        status = pd->sound->fileplayer->play(fp, 0);
+        if (!status)
+            pd->system->error("%s:%i Couldn't play music", __FILE__, __LINE__);
+
 
         // Initialize the properties and the menu items.
         initialize_properties();
@@ -208,7 +228,19 @@ int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t) {
         // NOTE: If you set an update callback in the kEventInit handler, the system assumes the game is pure C and
         // doesn't run any Lua code in the game
 		pd->system->setUpdateCallback(update, pd);
+
+        pd->system->logToConsole("--- Initialization complete.");
 	}
+
+    if (event == kEventTerminate) {
+        pd->system->logToConsole("*** Termination commencing.");
+
+        if (pd->sound->fileplayer->isPlaying(fp))
+            pd->sound->fileplayer->stop(fp);
+        pd->sound->fileplayer->freePlayer(fp);
+
+        pd->system->logToConsole("--- Termination complete.");
+    }
 
 	return 0;
 }
