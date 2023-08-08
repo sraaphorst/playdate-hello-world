@@ -1,3 +1,5 @@
 build/
 device/
 hello_world.pdx/
+Source/pdex.dylib
+Source/pdex.elf

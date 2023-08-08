@@ -199,7 +199,7 @@ void crankHandler(PlaydateAPI *pd) {
 }
 
 
-int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t) {
+int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t _) {
 	if (event == kEventInit) {
         pd->system->logToConsole("*** Initialization commencing.");
 		const char* err;
