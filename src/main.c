@@ -15,7 +15,7 @@ const char* font_path = "/System/Fonts/Asheville-Sans-14-Bold.pft";
 LCDFont* font = NULL;
 
 // Music player.
-const char *mp3_path = "good-night.mp3";
+const char *mp3_path = "music/good-night.mp3";
 FilePlayer *fp = NULL;
 
 #ifdef _WINDLL
