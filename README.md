@@ -20,8 +20,8 @@ For CMake, (CMD-,), add a configuration called "Device" with:
 
 * Name: `Device`
 * Target: `hello_world_DEVICE`
-* Executable: `/Users/vorpal/Developer/PlaydateSDK/bin/Playdate Simulator.app/Contents/MacOS/Playdate Simulator`
-* Program Arguments: `/Users/vorpal/dev/C/playdate-hello-world/hello_world.pdx`
+* Executable: `$HOME/Developer/PlaydateSDK/bin/Playdate Simulator.app/Contents/MacOS/Playdate Simulator`
+* Program Arguments: `$HOME/dev/C/playdate-hello-world/hello_world.pdx`
 
 ## Building
 
