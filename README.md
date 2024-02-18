@@ -34,4 +34,6 @@ $ cmake ..
 $ make
 ```
 
+Alternatively, you can just run `make` from the main directory.
+
 * You can then run the device configuration.

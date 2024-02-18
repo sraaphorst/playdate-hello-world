@@ -204,6 +204,8 @@ int eventHandler(PlaydateAPI* pd, PDSystemEvent event, uint32_t _) {
         pd->system->logToConsole("*** Initialization commencing.");
 		const char* err;
 
+        pd->display->setRefreshRate(0);
+
 		font = pd->graphics->loadFont(font_path, &err);
 		if (font == NULL)
 			pd->system->error("%s:%i Couldn't load font %s: %s", __FILE__, __LINE__, font_path, err);
